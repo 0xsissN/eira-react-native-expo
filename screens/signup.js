@@ -1,20 +1,18 @@
-import { Image, TextInput, Touchable, TouchableOpacity, View } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Image, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView, Text } from "react-native-web";
+const backImage = require("../assets/backImage.png");
+import { auth } from "../config/firebase";
 
-const backImage = require("../assets/backImage.png")
-
-export default function Login({ navigation }){
+export default function SignUp({ navigation }){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleLogin = () => {
+    const handleRegister = () => {
         if(email !== '' && password !== ''){
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => console.log("Login exitoso"))
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => console.log("sign up exitoso"))
                 .catch((e) => Alert.alert("Login error", e.message))
         }
     }
@@ -24,16 +22,16 @@ export default function Login({ navigation }){
             <Image source={backImage} style={{width: '100%', height: 340}}/>
             <View/>
             <SafeAreaView>
-                <Text>Login</Text>
+                <Text>Sign up</Text>
                 <TextInput placeholder="enter email" value={email} onChangeText={(text) => setEmail(text)}/>
                 <TextInput placeholder="enter password" value={password} onChangeText={(text) => setPassword(text)}/>
-                <TouchableOpacity onPress={handleLogin}>
-                    <Text>Log in</Text>
+                <TouchableOpacity onPress={handleRegister}>
+                    <Text>Sign up</Text>
                 </TouchableOpacity>
                 <View>
                     <Text>Dont have account</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                        <Text>Sign up</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                        <Text>Log in</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>        
