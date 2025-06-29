@@ -1,10 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-} from "react";
-import { TouchableOpacity, Text } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import {
   collection,
@@ -13,39 +8,15 @@ import {
   query,
   onSnapshot,
 } from "firebase/firestore";
-import { signOut } from "firebase/auth";
 import { auth, database } from "../config/firebase";
-import { useNavigation } from "@react-navigation/native";
-import { AntDesign } from "@expo/vector-icons";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
-  const navigation = useNavigation();
 
-  const onSignOut = () => {
-    signOut(auth).catch((e) => console.log("Error signing out", e.message));
-  };
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={{ marginRight: 10 }} onPress={onSignOut}>
-          <AntDesign
-            name="logout"
-            size={24}
-            color="black"
-            style={{ marginRight: 10 }}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     const collectionRef = collection(database, "chats");
     const q = query(collectionRef, orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      console.log("snap");
       setMessages(
         snapshot.docs.map((doc) => ({
           _id: doc.id,
@@ -55,6 +26,7 @@ export default function Chat() {
         }))
       );
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -64,30 +36,39 @@ export default function Chat() {
     );
 
     const { _id, createdAt, text, user } = messages[0];
-    addDoc(
-      collection(database, "chats"),
-      {
-        _id,
-        createdAt,
-        text,
-        user,
-      },
-      []
-    );
+    addDoc(collection(database, "chats"), {
+      _id,
+      createdAt,
+      text,
+      user,
+    });
   }, []);
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={(messages) => onSend(messages)}
-      user={{
-        _id: auth?.currentUser?.email,
-        avatar: "https://i.pravatar.cc/300",
-      }}
-      messagesContainerStyle={{
-        backgroundColor: "#fff",
-      }}
-      showAvatarForEveryMessage={false}
-    />
+    <View style={styles.container}>
+      <GiftedChat
+        messages={messages}
+        onSend={onSend}
+        user={{
+          _id: auth?.currentUser?.email,
+          avatar: "https://i.pravatar.cc/300",
+        }}
+        messagesContainerStyle={styles.messagesContainer}
+        renderUsernameOnMessage={true}
+        showAvatarForEveryMessage={false}
+        alwaysShowSend
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F8FAFC",
+  },
+  messagesContainer: {
+    backgroundColor: "#F8FAFC",
+    paddingBottom: 10,
+  },
+});

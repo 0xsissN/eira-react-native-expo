@@ -13,8 +13,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import Chat from "./screens/chat";
 import Login from "./screens/login";
 import SignUp from "./screens/signup";
-import Home from "./screens/home";
 import { auth } from "./config/firebase";
+import MainTabs from "./screens/main_tabs";
 
 const Stack = createNativeStackNavigator();
 const AuthenticatedUserContext = createContext({});
@@ -28,20 +28,22 @@ const AuthenticatedUserProvider = ({ children }) => {
   );
 };
 
-function ChatStack() {
+function AuthStack() {
   return (
-    <Stack.Navigator defaultScreenOptions={Home}>
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Chat" component={Chat} />
+    <Stack.Navigator
+      defaultScreenOptions={Login}
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SignUp" component={SignUp} />
     </Stack.Navigator>
   );
 }
 
-function AuthStack() {
+function AppStack() {
   return (
-    <Stack.Navigator defaultScreenOptions={Login} screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="SignUp" component={SignUp} />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs" component={MainTabs} />
     </Stack.Navigator>
   );
 }
@@ -67,7 +69,7 @@ function RootNavigator() {
 
   return (
     <NavigationContainer>
-      {user ? <ChatStack /> : <AuthStack />}
+      {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }
