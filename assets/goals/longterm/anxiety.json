@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Manejo de Ansiedad",
+    "levels": [
+      "Técnicas de respiración",
+      "Mindfulness diario",
+      "Desafiar pensamientos catastróficos"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Estilo de vida calmado",
+    "levels": [
+      "Reducción de cafeína",
+      "Rutina de sueño regular",
+      "Ejercicio físico leve"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Fortaleza mental",
+    "levels": [
+      "Exposición gradual a miedos",
+      "Aceptación de la incertidumbre",
+      "Tolerancia al malestar"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Confianza interna",
+    "levels": [
+      "Autoafirmaciones positivas",
+      "Planificación realista",
+      "Celebrar pequeños logros"
+    ]
+  }
+]

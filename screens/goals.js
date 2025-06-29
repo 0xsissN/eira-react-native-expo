@@ -7,13 +7,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import CompleteGoals from "./complete_goals";
 import DailyGoals from "./daily_goals";
 import LongTermGoals from "./long_term_goals";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 
-export default function Goals({ navigation }) {
+export default function Goals() {
   const [selectedTab, setSelectedTab] = useState("Daily");
   const [settingsVisible, setSettingsVisible] = useState(false);
 
@@ -40,7 +39,6 @@ export default function Goals({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Goals</Text>
         <View style={styles.headerIcons}>
@@ -50,39 +48,27 @@ export default function Goals({ navigation }) {
           >
             <Ionicons name="settings-outline" size={24} color="#6B7280" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="add" size={24} color="#8B5CF6" />
-          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TabButton
-          title="Daily"
+          title="Diario"
           isSelected={selectedTab === "Daily"}
           onPress={() => setSelectedTab("Daily")}
         />
         <TabButton
-          title="Long-term"
+          title="Largo plazo"
           isSelected={selectedTab === "Long-term"}
           onPress={() => setSelectedTab("Long-term")}
         />
-        <TabButton
-          title="Completed"
-          isSelected={selectedTab === "Completed"}
-          onPress={() => setSelectedTab("Completed")}
-        />
       </View>
 
-      {/* Dynamic content */}
       <View style={styles.tabContent}>
         {selectedTab === "Daily" && <DailyGoals />}
         {selectedTab === "Long-term" && <LongTermGoals />}
-        {selectedTab === "Completed" && <CompleteGoals />}
       </View>
 
-      {/* Settings modal */}
       {settingsVisible && (
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>

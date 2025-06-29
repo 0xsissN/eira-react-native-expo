@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Respira profundo",
+    "description": "Haz 5 respiraciones conscientes al comenzar el día"
+  },
+  {
+    "id": 2,
+    "title": "Diario emocional",
+    "description": "Escribe cómo te sentiste hoy durante 5 minutos"
+  },
+  {
+    "id": 3,
+    "title": "Ejercicio físico",
+    "description": "Realiza una caminata de 15 minutos"
+  },
+  {
+    "id": 4,
+    "title": "Tiempo fuera",
+    "description": "Tómate 10 minutos de descanso antes de responder con enojo"
+  },
+  {
+    "id": 5,
+    "title": "Conteo regresivo",
+    "description": "Cuenta lentamente del 10 al 1 cuando sientas enojo"
+  },
+  {
+    "id": 6,
+    "title": "Autoafirmaciones",
+    "description": "Repite 3 frases positivas para mantener la calma"
+  },
+  {
+    "id": 7,
+    "title": "Tensión y relajación",
+    "description": "Aprieta y relaja tus puños por 30 segundos"
+  },
+  {
+    "id": 8,
+    "title": "Reconoce el disparador",
+    "description": "Anota qué situación te hizo sentir enojo hoy"
+  }
+]

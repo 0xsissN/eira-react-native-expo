@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Movimiento suave",
+    "description": "Haz estiramientos por 5-10 minutos"
+  },
+  {
+    "id": 2,
+    "title": "Habla con alguien",
+    "description": "Escribe o envía un mensaje a alguien de confianza"
+  },
+  {
+    "id": 3,
+    "title": "Luz natural",
+    "description": "Sal al exterior por al menos 10 minutos"
+  },
+  {
+    "id": 4,
+    "title": "Agradecimientos",
+    "description": "Anota 2 cosas por las que estás agradecido hoy"
+  },
+  {
+    "id": 5,
+    "title": "Escucha música reconfortante",
+    "description": "Pon una canción que te haga sentir acompañado"
+  },
+  {
+    "id": 6,
+    "title": "Acto de amabilidad",
+    "description": "Haz algo pequeño por alguien más hoy"
+  },
+  {
+    "id": 7,
+    "title": "Escribe sin filtro",
+    "description": "Escribe lo que sientes sin preocuparte por la forma"
+  },
+  {
+    "id": 8,
+    "title": "Actividad que disfrutes",
+    "description": "Haz una actividad simple que solías disfrutar (dibujar, cocinar, etc.)"
+  }
+]

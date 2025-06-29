@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Recuperación emocional",
+    "levels": [
+      "Rutinas de autocuidado",
+      "Identificación de emociones",
+      "Acciones significativas"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Reconexión social",
+    "levels": [
+      "Buscar apoyo social",
+      "Participar en actividades grupales",
+      "Volver a disfrutar pasatiempos"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Motivación sostenida",
+    "levels": [
+      "Establecer metas pequeñas",
+      "Tener un diario de avances",
+      "Evaluar emociones sin juicio"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Fortalecimiento personal",
+    "levels": [
+      "Autocompasión",
+      "Crear un propósito",
+      "Desarrollar resiliencia"
+    ]
+  }
+]

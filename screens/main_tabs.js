@@ -46,7 +46,7 @@ export default function MainTabs() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Goals" component={Goals} />
+      <Tab.Screen name="Objetivos" component={Goals} />
       <Tab.Screen name="Journal" component={Journal} />
       <Tab.Screen name="Wellness" component={Wellness} />
       <Tab.Screen name="Social" component={Chat} />

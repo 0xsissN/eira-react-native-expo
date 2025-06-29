@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Gestión de Ira",
+    "levels": [
+      "Identificar detonantes",
+      "Control de impulsos",
+      "Comunicación asertiva"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Autoconciencia emocional",
+    "levels": [
+      "Registro diario de emociones",
+      "Reconocimiento de patrones",
+      "Reencuadre cognitivo"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Regulación emocional avanzada",
+    "levels": [
+      "Técnicas de relajación profunda",
+      "Expresión emocional saludable",
+      "Prevención de recaídas"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Relaciones positivas",
+    "levels": [
+      "Establecer límites",
+      "Escucha activa",
+      "Resolución de conflictos"
+    ]
+  }
+]

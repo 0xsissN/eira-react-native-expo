@@ -7,67 +7,91 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { database, auth } from "../config/firebase";
 
 export default function DailyGoals() {
-  const [goals, setGoals] = useState([
-    {
-      id: 1,
-      title: "Hydration",
-      description: "Drink 2 liters of water a day",
-      completed: false,
-      date: new Date().toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "short",
-      }),
-    },
-    // Add more goals here
-  ]);
+  const [goals, setGoals] = useState([]);
 
-  // Load saved goals
+  const loadJsonByProblem = async (problem) => {
+    switch (problem) {
+      case "ira":
+        return require("../assets/goals/daily/anger.json");
+      case "ansiedad":
+        return require("../assets/goals/daily/anxiety.json");
+      case "tristeza":
+        return require("../assets/goals/daily/sadness.json");
+      default:
+        return [];
+    }
+  };
+
   useEffect(() => {
-    const loadGoals = async () => {
-      const savedGoals = await AsyncStorage.getItem("dailyGoals");
-      if (savedGoals) setGoals(JSON.parse(savedGoals));
+    const fetchData = async () => {
+      try {
+        const uid = auth.currentUser.uid;
+        const userRef = doc(database, "users", uid);
+        const docSnap = await getDoc(userRef);
+
+        if (!docSnap.exists()) {
+          console.warn("No se encontró el perfil del usuario.");
+          return;
+        }
+
+        const userData = docSnap.data();
+        const problem = userData.problem;
+        const today = new Date().toISOString().split("T")[0];
+
+        if (userData.dailyGoals && userData.dailyGoals[today]) {
+          setGoals(userData.dailyGoals[today]);
+        } else {
+          const loadedGoals = await loadJsonByProblem(problem);
+          const formattedGoals = loadedGoals.map((goal) => ({
+            ...goal,
+            completed: false,
+            date: new Date().toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "short",
+            }),
+          }));
+
+          setGoals(formattedGoals);
+
+          await updateDoc(userRef, {
+            [`dailyGoals.${today}`]: formattedGoals,
+          });
+        }
+      } catch (error) {
+        console.error("Error al cargar datos del usuario:", error);
+      }
     };
-    loadGoals();
+
+    fetchData();
   }, []);
 
-  // Toggle completion
   const toggleComplete = async (id) => {
-    const updatedGoals = goals.map((goal) =>
-      goal.id === id ? { ...goal, completed: !goal.completed } : goal
-    );
-
-    setGoals(updatedGoals);
-    await AsyncStorage.setItem("dailyGoals", JSON.stringify(updatedGoals));
-
-    if (updatedGoals.find((g) => g.id === id)?.completed) {
-      const completedGoal = updatedGoals.find((g) => g.id === id);
-      const completedList = JSON.parse(
-        (await AsyncStorage.getItem("completedGoals")) || "[]"
+    try {
+      const updatedGoals = goals.map((goal) =>
+        goal.id === id ? { ...goal, completed: !goal.completed } : goal
       );
+      setGoals(updatedGoals);
 
-      const newCompletedGoal = {
-        ...completedGoal,
-        date: new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-      };
+      const uid = auth.currentUser.uid;
+      const userRef = doc(database, "users", uid);
+      const today = new Date().toISOString().split("T")[0];
 
-      await AsyncStorage.setItem(
-        "completedGoals",
-        JSON.stringify([newCompletedGoal, ...completedList])
-      );
+      await updateDoc(userRef, {
+        [`dailyGoals.${today}`]: updatedGoals,
+      });
+    } catch (error) {
+      console.error("Error al guardar el estado del goal:", error);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.sectionTitle}>Daily Goals</Text>
+        <Text style={styles.sectionTitle}>Objetivos Diarios</Text>
         <Text style={styles.counter}>
           {goals.filter((g) => g.completed).length}/{goals.length}
         </Text>

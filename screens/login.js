@@ -14,7 +14,9 @@ export default function Login({ navigation }){
     const handleLogin = () => {
         if(email !== '' && password !== ''){
             signInWithEmailAndPassword(auth, email, password)
-                .then(() => console.log("Login exitoso"))
+                .then(() => {
+                    console.log("Login exitoso")
+                })
                 .catch((e) => Alert.alert("Login error", e.message))
         }
     }

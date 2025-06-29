@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Ejercicio de respiración",
+    "description": "Haz respiración 4-7-8 durante 3 minutos"
+  },
+  {
+    "id": 2,
+    "title": "Visualización",
+    "description": "Visualiza un lugar tranquilo durante 5 minutos"
+  },
+  {
+    "id": 3,
+    "title": "Evita cafeína",
+    "description": "Evita bebidas estimulantes hoy"
+  },
+  {
+    "id": 4,
+    "title": "Checklist",
+    "description": "Haz una lista de 3 cosas que sí puedes controlar hoy"
+  },
+  {
+    "id": 5,
+    "title": "Aterriza con los 5 sentidos",
+    "description": "Enumera 1 cosa que ves, oyes, tocas, hueles y saboreas"
+  },
+  {
+    "id": 6,
+    "title": "Movimiento consciente",
+    "description": "Haz estiramientos suaves durante 5 minutos"
+  },
+  {
+    "id": 7,
+    "title": "Escribe tus pensamientos",
+    "description": "Anota lo que te preocupa sin juzgarte"
+  },
+  {
+    "id": 8,
+    "title": "Rutina relajante",
+    "description": "Dedica 15 minutos a una actividad tranquila (leer, dibujar, etc.)"
+  }
+]
