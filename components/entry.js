@@ -9,13 +9,16 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { database } from "../config/firebase";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 export default function Entry({ onClose }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    sentimiento: null,
-    sueno: null,
-    clima: null,
+    sentimiento: "bien",
+    sueno: "bien",
+    clima: "lluvia",
     actividades: [],
     notas: "",
   });
@@ -70,11 +73,28 @@ export default function Entry({ onClose }) {
     ],
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Guardar entrada
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          await addDoc(collection(database, "entradas"), {
+            ...formData,
+            timestamp: Timestamp.now(),
+            userId: user.uid,
+          });
+        } else {
+          console.warn("Usuario no autenticado");
+        }
+
+        onClose();
+      } catch (error) {
+        console.error("Error al guardar la entrada:", error);
+      }
       onClose();
     }
   };
@@ -153,7 +173,10 @@ export default function Entry({ onClose }) {
     switch (currentStep) {
       case 1:
         return (
-          <View style={styles.stepContainer}>
+          <ScrollView
+            style={styles.stepContainer}
+            showsVerticalScrollIndicator={false}
+          >
             <Text style={styles.stepTitle}>¿Cómo te sientes?</Text>
             <View style={styles.sentimientosGrid}>
               {sentimientos.map((sentimiento) => (
@@ -163,7 +186,7 @@ export default function Entry({ onClose }) {
                 />
               ))}
             </View>
-          </View>
+          </ScrollView>
         );
 
       case 2:
@@ -219,15 +242,6 @@ export default function Entry({ onClose }) {
               value={formData.notas}
               onChangeText={(text) => setFormData({ ...formData, notas: text })}
             />
-
-            <TouchableOpacity style={styles.voiceButton}>
-              <Ionicons name="mic" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-
-            <Text style={styles.imagePrompt}>¿Agregar una imagen?</Text>
-            <TouchableOpacity style={styles.addImageButton}>
-              <Ionicons name="add" size={32} color="#8B5CF6" />
-            </TouchableOpacity>
           </View>
         );
 
@@ -436,40 +450,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  voiceButton: {
-    position: "absolute",
-    right: 30,
-    bottom: 120,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "#8B5CF6",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  imagePrompt: {
-    fontSize: 16,
-    color: "#6B7280",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  addImageButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    borderStyle: "dashed",
-  },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -501,4 +481,4 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
   },
-})
+});

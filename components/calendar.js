@@ -9,6 +9,8 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth, database } from "../config/firebase";
 
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -17,6 +19,7 @@ export default function Calendar() {
   const [selectedYear, setSelectedYear] = useState(2025);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
+  const [entradasData, setEntradasData] = useState({});
 
   const meses = [
     "Enero",
@@ -35,90 +38,48 @@ export default function Calendar() {
 
   const años = Array.from({ length: 10 }, (_, i) => 2020 + i);
 
-  // Datos de ejemplo para las entradas (ajustados para junio 2025)
-  const entradasData = {
-    1: {
-      estado: "bien",
-      clima: "sunny",
-      emoji: "😊",
-      actividades: ["oficina", "leer", "cafe"],
-      texto:
-        "Primer día de junio y comenzó muy bien. Trabajo productivo en la oficina, leí un poco por la tarde y tomé un café delicioso.",
-      audio: "01:07",
-    },
-    3: {
-      estado: "muy-bien",
-      clima: "sunny",
-      emoji: "😄",
-      actividades: ["ejercicio", "amigos", "cita"],
-      texto:
-        "¡Día increíble! Hice ejercicio por la mañana, salí con amigos y tuve una cita maravillosa. Me siento lleno de energía.",
-      audio: "02:15",
-    },
-    5: {
-      estado: "okay",
-      clima: "cloudy",
-      emoji: "😐",
-      actividades: ["trabajo", "gaming"],
-      texto:
-        "Día normal de trabajo. Un poco nublado pero nada fuera de lo común. Jugué videojuegos por la noche para relajarme.",
-      audio: "00:45",
-    },
-    8: {
-      estado: "mal",
-      clima: "rainy",
-      emoji: "😢",
-      actividades: ["discusion", "trabajo"],
-      texto:
-        "Día complicado en el trabajo. Tuve una discusión que me afectó y la lluvia no ayudó a mejorar mi estado de ánimo.",
-      audio: "01:23",
-    },
-    12: {
-      estado: "bien",
-      clima: "sunny",
-      emoji: "😊",
-      actividades: ["amigos", "ejercicio"],
-      texto:
-        "Buen día con amigos. Hicimos ejercicio juntos y pasamos un rato muy agradable. El sol brillaba y me sentí muy bien.",
-      audio: "01:45",
-    },
-    15: {
-      estado: "muy-bien",
-      clima: "sunny",
-      emoji: "😄",
-      actividades: ["cita", "celebracion"],
-      texto:
-        "¡Día perfecto! Celebré algo muy especial con mi pareja. Todo salió mejor de lo esperado y me siento increíble.",
-      audio: "02:30",
-    },
-    18: {
-      estado: "mal",
-      clima: "rainy",
-      emoji: "😠",
-      actividades: ["dentista", "medicinas"],
-      texto:
-        "Visita al dentista que no fue nada agradable. Tuve que tomar medicinas y me sentí bastante mal todo el día.",
-      audio: "00:52",
-    },
-    22: {
-      estado: "bien",
-      clima: "cloudy",
-      emoji: "😊",
-      actividades: ["leer", "cafe", "amigos"],
-      texto:
-        "Día tranquilo pero agradable. Leí un buen libro, tomé café con amigos y disfruté de la tarde nublada.",
-      audio: "01:20",
-    },
-    25: {
-      estado: "muy-bien",
-      clima: "sunny",
-      emoji: "😄",
-      actividades: ["ejercicio", "cita", "celebracion"],
-      texto:
-        "¡Otro día fantástico! Ejercicio matutino, cita romántica y pequeña celebración. Me siento en la cima del mundo.",
-      audio: "02:45",
-    },
-  };
+  useEffect(() => {
+    const fetchEntradas = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const q = query(
+          collection(database, "entradas"),
+          where("userId", "==", user.uid)
+        );
+
+        const snapshot = await getDocs(q);
+        const rawData = snapshot.docs.map((doc) => doc.data());
+
+        const filtradas = rawData.filter((d) => {
+          const fecha = d.timestamp.toDate();
+          return (
+            fecha.getMonth() === selectedMonth &&
+            fecha.getFullYear() === selectedYear
+          );
+        });
+
+        const formato = {};
+        filtradas.forEach((d) => {
+          const fecha = d.timestamp.toDate();
+          const dia = fecha.getDate();
+          formato[dia] = {
+            estado: d.sentimiento,
+            clima: d.clima,
+            actividades: d.actividades || [],
+            texto: d.notas,
+          };
+        });
+
+        setEntradasData(formato);
+      } catch (error) {
+        console.error("Error al obtener entradas:", error);
+      }
+    };
+
+    fetchEntradas();
+  }, [selectedMonth, selectedYear]);
 
   useEffect(() => {
     const today = new Date();
@@ -213,9 +174,8 @@ export default function Calendar() {
 
   const renderCalendarDays = () => {
     const days = [];
-    const totalCells = 42; // 6 semanas × 7 días
+    const totalCells = 42;
 
-    // Días vacíos al inicio del mes
     for (let i = 0; i < firstDay; i++) {
       days.push(
         <View key={`empty-start-${i}`} style={styles.diaContainer}>
@@ -224,7 +184,6 @@ export default function Calendar() {
       );
     }
 
-    // Días del mes actual
     for (let dia = 1; dia <= daysInMonth; dia++) {
       const entrada = entradasData[dia];
       const isSelected = selectedDate === dia;
@@ -276,7 +235,6 @@ export default function Calendar() {
       );
     }
 
-    // Días vacíos al final para completar la grilla
     const remainingCells = totalCells - days.length;
     for (let i = 0; i < remainingCells; i++) {
       days.push(
@@ -382,7 +340,6 @@ export default function Calendar() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.content}>
-        {/* Selector de fecha */}
         <View style={styles.selectorContainer}>
           <Text style={styles.selectorLabel}>Seleccionar fecha</Text>
           <View style={styles.selectorRow}>
@@ -406,9 +363,7 @@ export default function Calendar() {
           </View>
         </View>
 
-        {/* Calendario */}
         <View style={styles.calendarioContainer}>
-          {/* Días de la semana */}
           <View style={styles.diasSemanaContainer}>
             {diasSemana.map((dia, index) => (
               <Text key={index} style={styles.diaSemanaTexto}>
@@ -417,14 +372,11 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Días del mes */}
           <View style={styles.diasMesContainer}>{renderCalendarDays()}</View>
         </View>
 
-        {/* Contenido de la fecha seleccionada */}
         {selectedEntry && (
           <>
-            {/* Actividades del día seleccionado */}
             <View style={styles.actividadesContainer}>
               <View style={styles.actividadesRow}>
                 <View style={styles.actividadItem}>
@@ -460,14 +412,12 @@ export default function Calendar() {
               </View>
             </View>
 
-            {/* Texto de la entrada */}
             <View style={styles.entradaTextoContainer}>
               <Text style={styles.entradaTexto}>{selectedEntry.texto}</Text>
             </View>
           </>
         )}
 
-        {/* Mensaje cuando no hay fecha seleccionada */}
         {!selectedEntry && selectedDate && (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>No hay entrada para este día</Text>

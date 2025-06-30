@@ -1,86 +1,81 @@
-import {
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth, database } from "../config/firebase";
 
 export default function Entries() {
-  const entradas = [
-    {
-      id: 1,
-      fecha: "10 de agosto",
-      clima: "cloud",
-      emoji: "😊",
-      estado: "bien",
-      color: "#A7F3D0",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-    {
-      id: 2,
-      fecha: "9 de agosto",
-      clima: "rainy",
-      emoji: "😐",
-      estado: "okay",
-      color: "#A7F3D0",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-    {
-      id: 3,
-      fecha: "8 de agosto",
-      clima: "cloudy",
-      emoji: "😊",
-      estado: "bien",
-      color: "#A7F3D0",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-    {
-      id: 4,
-      fecha: "7 de agosto",
-      clima: "rainy",
-      emoji: "😢",
-      estado: "mal",
-      color: "#FECACA",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-    {
-      id: 5,
-      fecha: "6 de agosto",
-      clima: "rainy",
-      emoji: "😠",
-      estado: "muy-mal",
-      color: "#FECACA",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-    {
-      id: 6,
-      fecha: "5 de agosto",
-      clima: "cloudy",
-      emoji: "😊",
-      estado: "bien",
-      color: "#A7F3D0",
-      texto:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Se...",
-    },
-  ];
-  
+  const [entradas, setEntradas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEntradas = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          setLoading(false); 
+          return;
+        }
+
+        const q = query(
+          collection(database, "entradas"),
+          where("userId", "==", user.uid) 
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const data = querySnapshot.docs.map((doc) => {
+          const d = doc.data();
+          const fechaObj = d.timestamp.toDate();
+          const dia = fechaObj.getDate();
+          const mes = fechaObj.toLocaleDateString("es-ES", { month: "long" });
+
+          const sentimientoMap = {
+            "muy-bien": { emoji: "😄", color: "#A7F3D0" },
+            bien: { emoji: "😊", color: "#D1FAE5" },
+            okay: { emoji: "😐", color: "#FEF3C7" },
+            mal: { emoji: "😢", color: "#FECACA" },
+            "muy-mal": { emoji: "😠", color: "#FCA5A5" },
+          };
+
+          const { emoji, color } = sentimientoMap[d.sentimiento] || {
+            emoji: "❓",
+            color: "#E5E7EB",
+          };
+
+          return {
+            id: doc.id,
+            fecha: { dia, mes },
+            clima: d.clima,
+            emoji,
+            color,
+            texto: d.notas,
+          };
+        });
+
+        setEntradas(data);
+      } catch (error) {
+        console.error("Error al obtener entradas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEntradas();
+  }, []);
+
   const getClimaIcon = (clima) => {
-    switch (clima) {
-      case "cloud":
-        return "cloud-outline";
-      case "rainy":
-        return "rainy-outline";
-      case "cloudy":
+    switch (clima.toLowerCase()) {
+      case "nublado":
         return "cloudy-outline";
-      default:
+      case "lluvioso":
+        return "rainy-outline";
+      case "soleado":
         return "sunny-outline";
+      case "tormenta":
+        return "thunderstorm-outline";
+      default:
+        return "partly-sunny-outline";
     }
   };
 
@@ -88,10 +83,8 @@ export default function Entries() {
     <View style={[styles.entradaCard, { backgroundColor: entrada.color }]}>
       <View style={styles.entradaHeader}>
         <View style={styles.fechaContainer}>
-          <Text style={styles.fechaNumero}>{entrada.fecha.split(" ")[0]}</Text>
-          <Text style={styles.fechaTexto}>
-            {entrada.fecha.split(" ").slice(1).join(" ")}
-          </Text>
+          <Text style={styles.fechaNumero}>{entrada.fecha.dia}</Text>
+          <Text style={styles.fechaTexto}>{entrada.fecha.mes}</Text>
         </View>
         <View style={styles.iconosContainer}>
           <Ionicons
@@ -109,9 +102,15 @@ export default function Entries() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.content}>
-        {entradas.map((entrada) => (
-          <EntradaCard key={entrada.id} entrada={entrada} />
-        ))}
+        {!loading && entradas.length === 0 ? (
+          <Text style={{ textAlign: "center", marginTop: 40, fontSize: 16 }}>
+            No tienes entradas aún. Agrega nuevas entradas para comenzar.
+          </Text>
+        ) : (
+          entradas.map((entrada) => (
+            <EntradaCard key={entrada.id} entrada={entrada} />
+          ))
+        )}
       </View>
     </ScrollView>
   );
