@@ -10,6 +10,8 @@ import MainTabs from "./screens/main_tabs";
 import CompleteProfile from "./screens/profile";
 import { auth, database } from "./config/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import Welcome from "./screens/welcome";
+import OnboardingCarousel from "./screens/onboarding-carousel";
 
 export const AuthenticatedUserContext = createContext({
   user: null,
@@ -36,6 +38,8 @@ const AuthenticatedUserProvider = ({ children }) => {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="OnboardingCarousel" component={OnboardingCarousel} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
     </Stack.Navigator>

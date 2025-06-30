@@ -31,22 +31,22 @@ export default function CompleteProfile() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text>Name</Text>
+      <Text>Nombre</Text>
       <TextInput
-        placeholder="Enter your name"
+        placeholder="Ingresar nombre"
         value={name}
         onChangeText={setName}
         style={{ borderWidth: 1, marginBottom: 12, padding: 8 }}
       />
-      <Text>Age</Text>
+      <Text>Edad</Text>
       <TextInput
-        placeholder="Enter your age"
+        placeholder="Ingresar edad"
         value={age}
         onChangeText={setAge}
         keyboardType="numeric"
         style={{ borderWidth: 1, marginBottom: 12, padding: 8 }}
       />
-      <Text>Specific problem</Text>
+      <Text>Especificar problema</Text>
       <TextInput
         placeholder="E.g. ira, ansiedad, tristeza"
         value={problem}
@@ -62,7 +62,7 @@ export default function CompleteProfile() {
           borderRadius: 8,
         }}
       >
-        <Text style={{ color: "white", fontWeight: "bold" }}>Save Profile</Text>
+        <Text style={{ color: "white", fontWeight: "bold" }}>Guardar Perfil</Text>
       </TouchableOpacity>
     </View>
   );

@@ -3,7 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import Goals from "./goals";
 import Chat from "./chat";
 import Journal from "./journal";
-import Wellness from "./wellness";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,12 +13,10 @@ export default function MainTabs() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Goals") {
+          if (route.name === "Objetivos") {
             iconName = focused ? "trophy" : "trophy-outline";
-          } else if (route.name === "Journal") {
+          } else if (route.name === "Sentimentario") {
             iconName = focused ? "journal" : "journal-outline";
-          } else if (route.name === "Wellness") {
-            iconName = focused ? "fitness" : "fitness-outline";
           } else if (route.name === "Social") {
             iconName = focused ? "heart" : "heart-outline";
           }
@@ -47,8 +44,7 @@ export default function MainTabs() {
       })}
     >
       <Tab.Screen name="Objetivos" component={Goals} />
-      <Tab.Screen name="Journal" component={Journal} />
-      <Tab.Screen name="Wellness" component={Wellness} />
+      <Tab.Screen name="Sentimentario" component={Journal} />
       <Tab.Screen name="Social" component={Chat} />
     </Tab.Navigator>
   );

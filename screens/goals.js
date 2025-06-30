@@ -40,7 +40,7 @@ export default function Goals() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Goals</Text>
+        <Text style={styles.headerTitle}>Objetivos</Text>
         <View style={styles.headerIcons}>
           <TouchableOpacity
             style={styles.iconButton}
@@ -72,7 +72,7 @@ export default function Goals() {
       {settingsVisible && (
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Settings</Text>
+            <Text style={styles.modalTitle}>Configuracion</Text>
             <TouchableOpacity style={styles.modalButton} onPress={onSignOut}>
               <Text style={styles.modalButtonText}>Sign out</Text>
             </TouchableOpacity>
@@ -81,7 +81,7 @@ export default function Goals() {
               onPress={() => setSettingsVisible(false)}
             >
               <Text style={[styles.modalButtonText, { color: "#1F2937" }]}>
-                Cancel
+                Cancelar
               </Text>
             </TouchableOpacity>
           </View>
