@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { enableScreens } from "react-native-screens"; 
+enableScreens(); 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { onAuthStateChanged } from "firebase/auth";
 

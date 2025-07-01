@@ -15,7 +15,7 @@ import { auth, database } from "../config/firebase";
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedMonth, setSelectedMonth] = useState(5); // Junio (0-based)
+  const [selectedMonth, setSelectedMonth] = useState(5); 
   const [selectedYear, setSelectedYear] = useState(2025);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);

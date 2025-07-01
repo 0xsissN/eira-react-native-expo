@@ -4,9 +4,9 @@ import {
   View,
   StyleSheet,
   Alert,
-  Text,
-  SafeAreaView,
+  Text
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useState } from "react";

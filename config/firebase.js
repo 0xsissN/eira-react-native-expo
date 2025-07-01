@@ -1,5 +1,5 @@
 import Constants from 'expo-constants'
-import { initializeApp } from 'firebase/app'
+import { getApps, initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
@@ -13,6 +13,8 @@ const firebaseConfig = {
   databaseURL: Constants.expoConfig.extra.databaseURL,
 }
 
-initializeApp(firebaseConfig)
-export const auth = getAuth()
-export const database = getFirestore()
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const auth = getAuth()
+const database = getFirestore()
+
+export { app, auth, database }

@@ -3,12 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import Calendar from "../components/calendar";
 import Entries from "../components/entries";
 import Entry from "../components/entry";
